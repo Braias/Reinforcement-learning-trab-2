@@ -39,7 +39,7 @@ if __name__ == "__main__":
 
     # Define the initial hyperparameters
     INIT_HP = {
-        "POPULATION_SIZE": 4,
+        "POPULATION_SIZE": 6,
         "ALGO": "MATD3",  # Algorithm
         "BATCH_SIZE": 128,  # Batch size
         "O_U_NOISE": True,  # Ornstein Uhlenbeck action noise
@@ -49,7 +49,7 @@ if __name__ == "__main__":
         "DT": 0.01,  # Timestep for OU noise
         "LR_ACTOR": 0.0001,  # Actor learning rate
         "LR_CRITIC": 0.001,  # Critic learning rate
-        "GAMMA": 0.95,  # Discount factor
+        "GAMMA": 0.99,  # Discount factor
         "MEMORY_SIZE": 100000,  # Max memory buffer size
         "LEARN_STEP": 100,  # Learning frequency
         "TAU": 0.01,  # For soft update of target parameters
@@ -113,11 +113,11 @@ if __name__ == "__main__":
     # Instantiate a mutations object (used for HPO)
     mutations = Mutations(
         no_mutation=0.2,  # Probability of no mutation
-        architecture=0.2,  # Probability of architecture mutation
-        new_layer_prob=0.2,  # Probability of new layer mutation
+        architecture=0.1,  # Probability of architecture mutation
+        new_layer_prob=0.1,  # Probability of new layer mutation
         parameters=0.2,  # Probability of parameter mutation
         activation=0,  # Probability of activation function mutation
-        rl_hp=0.2,  # Probability of RL hyperparameter mutation
+        rl_hp=0.4,  # Probability of RL hyperparameter mutation
         mutation_sd=0.1,  # Mutation strength
         rand_seed=1,
         device=device,
@@ -126,7 +126,7 @@ if __name__ == "__main__":
     # Define training loop parameters
     max_steps = 2_000_000  # Max steps (default: 2000000)
     learning_delay = 0  # Steps before starting learning
-    evo_steps = 10_000  # Evolution frequency
+    evo_steps = 50_000  # Evolution frequency
     eval_steps = None  # Evaluation steps per episode - go until done
     eval_loop = 1  # Number of evaluation episodes
     elite = pop[0]  # Assign a placeholder "elite" agent
