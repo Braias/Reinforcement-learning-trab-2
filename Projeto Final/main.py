@@ -39,9 +39,9 @@ if __name__ == "__main__":
 
     # Define the initial hyperparameters
     INIT_HP = {
-        "POPULATION_SIZE": 6,
+        "POPULATION_SIZE": 4,
         "ALGO": "MATD3",  # Algorithm
-        "BATCH_SIZE": 128,  # Batch size
+        "BATCH_SIZE": 1024,  # Batch size
         "O_U_NOISE": True,  # Ornstein Uhlenbeck action noise
         "EXPL_NOISE": 0.1,  # Action noise scale
         "MEAN_NOISE": 0.0,  # Mean action noise
@@ -51,9 +51,9 @@ if __name__ == "__main__":
         "LR_CRITIC": 0.001,  # Critic learning rate
         "GAMMA": 0.99,  # Discount factor
         "MEMORY_SIZE": 100000,  # Max memory buffer size
-        "LEARN_STEP": 100,  # Learning frequency
+        "LEARN_STEP": 128,  # Learning frequency
         "TAU": 0.01,  # For soft update of target parameters
-        "POLICY_FREQ": 2,  # Policy frequnecy
+        "POLICY_FREQ": 3,  # Policy frequnecy
     }
 
     num_envs = 8
@@ -78,6 +78,8 @@ if __name__ == "__main__":
         learn_step=RLParameter(
             min=20, max=200, dtype=int, grow_factor=1.5, shrink_factor=0.75
         ),
+        tau=RLParameter(min=1e-3, max=1e-2), # Letting the program learn these parameters
+        policy_freq=RLParameter(min=2, max=5, dtype=int) # This one too
     )
 
     # Create a population ready for evolutionary hyper-parameter optimisation
@@ -258,6 +260,9 @@ if __name__ == "__main__":
         # Tournament selection and population mutation
         elite, pop = tournament.select(pop)
         pop = mutations.mutation(pop)
+
+        # Make sure the elite agent isn't mutated
+        pop[0] = elite
 
         # Update step counter
         for agent in pop:
