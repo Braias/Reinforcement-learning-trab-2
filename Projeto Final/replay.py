@@ -99,5 +99,5 @@ if __name__ == "__main__":
     gif_path = "./videos/"
     os.makedirs(gif_path, exist_ok=True)
     imageio.mimwrite(
-        os.path.join("./videos/", "speaker_listener.gif"), frames, duration=10
+        os.path.join("./videos/", "speaker_listener.gif"), frames, duration=30
     )

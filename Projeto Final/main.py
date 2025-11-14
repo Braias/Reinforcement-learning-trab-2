@@ -72,8 +72,8 @@ if __name__ == "__main__":
 
     # Mutation config for RL hyperparameters
     hp_config = HyperparameterConfig(
-        lr_actor=RLParameter(min=1e-4, max=1e-2),
-        lr_critic=RLParameter(min=1e-4, max=1e-2),
+        lr_actor=RLParameter(min=1e-7, max=1e-2),
+        lr_critic=RLParameter(min=1e-7, max=1e-2),
         batch_size=RLParameter(min=8, max=512, dtype=int),
         learn_step=RLParameter(
             min=20, max=200, dtype=int, grow_factor=1.5, shrink_factor=0.75
@@ -126,7 +126,7 @@ if __name__ == "__main__":
     )
 
     # Define training loop parameters
-    max_steps = 2_000_000  # Max steps (default: 2000000)
+    max_steps = 5_000_000  # Max steps (default: 2000000)
     learning_delay = 0  # Steps before starting learning
     evo_steps = 50_000  # Evolution frequency
     eval_steps = None  # Evaluation steps per episode - go until done
@@ -134,8 +134,8 @@ if __name__ == "__main__":
     elite = pop[0]  # Assign a placeholder "elite" agent
     total_steps = 0
     
-    # Lista para armazenar pontuações médias para plotagem
-    training_scores_history = []
+    # Lista para armazenar pontuações do melhor agente
+    elite_fitness_history = []
 
     # TRAINING LOOP
     print("Training...")
@@ -237,8 +237,7 @@ if __name__ == "__main__":
         ]
         
         # Salvar pontuação média da população para plotagem
-        population_mean_score = np.mean([score for score in mean_scores if isinstance(score, (int, float))])
-        training_scores_history.append(population_mean_score)
+        elite_fitness_history.append(max(fitnesses))
 
         mean_scores_display = [
             (
@@ -277,7 +276,7 @@ if __name__ == "__main__":
     
     # Plotar e salvar a evolução das pontuações
     plt.figure(figsize=(12, 6))
-    plt.plot(training_scores_history, linewidth=2)
+    plt.plot(elite_fitness_history, linewidth=2)
     plt.title('Evolução das Pontuações Médias Durante o Treinamento', fontsize=14)
     plt.xlabel('Iterações de Evolução', fontsize=12)
     plt.ylabel('Pontuação Média da População', fontsize=12)
@@ -291,7 +290,7 @@ if __name__ == "__main__":
     
     # Salvar dados das pontuações em arquivo numpy
     scores_data_path = os.path.join(path, "training_scores_history.npy")
-    np.save(scores_data_path, np.array(training_scores_history))
+    np.save(scores_data_path, np.array(elite_fitness_history))
     print(f"Dados das pontuações salvos em: {scores_data_path}")
     
     plt.show()
